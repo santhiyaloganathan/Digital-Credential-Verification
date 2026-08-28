@@ -1,0 +1,21 @@
+{
+  "name": "digital-credential-verification",
+  "version": "1.0.0",
+  "description": "ZENVYRA Digital Credential Verification using Blockchain",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.js --network sepolia"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.17.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.19"
+  }
+}
