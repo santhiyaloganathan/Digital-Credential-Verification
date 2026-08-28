@@ -7,43 +7,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("ZENVYRA JavaScript loaded successfully.");
 
-    // =================================================
-    // NAVIGATION
-    // =================================================
-
     setupNavigation();
-
-    // =================================================
-    // VERIFY CREDENTIAL
-    // =================================================
-
     setupCredentialVerification();
-
-    // =================================================
-    // INSTITUTION LOGIN
-    // =================================================
-
     setupInstitutionLogin();
-
-    // =================================================
-    // METAMASK
-    // =================================================
-
     setupMetaMask();
-
-    // =================================================
-    // ISSUE CERTIFICATE
-    // =================================================
-
     setupIssueCertificate();
-
-    // =================================================
-    // LOGOUT
-    // =================================================
-
     setupLogout();
 
 });
+
+
+// =====================================================
+// BACKEND CONFIGURATION
+// =====================================================
+
+const BACKEND_URL =
+    "https://magic-object-robert-believe.trycloudflare.com";
 
 
 // =====================================================
@@ -207,7 +186,7 @@ function setupCredentialVerification() {
                 "verification-result";
 
             result.textContent =
-                "Checking blockchain record...";
+                "Checking credential record...";
 
 
             try {
@@ -215,16 +194,24 @@ function setupCredentialVerification() {
                 // -------------------------------------
                 // BACKEND API
                 // -------------------------------------
-                // PUBLIC BACKEND URL
-                // Cloudflare Tunnel
-                // -------------------------------------
+
+                const apiUrl =
+                    BACKEND_URL +
+                    "/api/verify/" +
+                    encodeURIComponent(
+                        credentialId
+                    );
+
+
+                console.log(
+                    "Verification API:",
+                    apiUrl
+                );
+
 
                 const response =
                     await fetch(
-                        "https://expand-demand-mercy-somehow.trycloudflare.com/api/verify/" +
-                        encodeURIComponent(
-                            credentialId
-                        ),
+                        apiUrl,
                         {
                             method: "GET",
                             headers: {
@@ -249,7 +236,8 @@ function setupCredentialVerification() {
                 } catch (jsonError) {
 
                     console.warn(
-                        "Response was not JSON."
+                        "Response was not JSON.",
+                        jsonError
                     );
 
                 }
@@ -269,22 +257,6 @@ function setupCredentialVerification() {
                     response.ok &&
                     data
                 ) {
-
-                    /*
-                     * Supports common backend responses:
-                     *
-                     * {
-                     *   verified: true,
-                     *   certificate: {...}
-                     * }
-                     *
-                     * OR
-                     *
-                     * {
-                     *   success: true,
-                     *   data: {...}
-                     * }
-                     */
 
                     const verified =
                         data.verified === true ||
@@ -397,10 +369,6 @@ function buildSuccessMessage(
         "Credential ID: " +
         credentialId;
 
-
-    // -----------------------------------------
-    // Certificate details
-    // -----------------------------------------
 
     const certificate =
         data.certificate ||
@@ -570,12 +538,10 @@ function setupInstitutionLogin() {
                     "institutionUsername"
                 );
 
-
             const password =
                 document.getElementById(
                     "institutionPassword"
                 );
-
 
             const status =
                 document.getElementById(
@@ -594,10 +560,6 @@ function setupInstitutionLogin() {
                     ? password.value.trim()
                     : "";
 
-
-            // -----------------------------------------
-            // EMPTY INPUT
-            // -----------------------------------------
 
             if (
                 !institutionId ||
@@ -618,10 +580,6 @@ function setupInstitutionLogin() {
             }
 
 
-            // -----------------------------------------
-            // CURRENT DEMO LOGIN
-            // -----------------------------------------
-
             if (status) {
 
                 status.innerHTML =
@@ -632,8 +590,6 @@ function setupInstitutionLogin() {
 
             }
 
-
-            // Open admin dashboard page
 
             setTimeout(function () {
 
@@ -679,40 +635,31 @@ function setupMetaMask() {
                     "walletStatus"
                 );
 
-
             const walletAddress =
                 document.getElementById(
                     "walletAddress"
                 );
-
 
             const blockchainStatus =
                 document.getElementById(
                     "blockchainStatus"
                 );
 
-
             const networkIndicator =
                 document.getElementById(
                     "networkIndicator"
                 );
-
 
             const networkName =
                 document.getElementById(
                     "networkName"
                 );
 
-
             const dashboardWallet =
                 document.getElementById(
                     "dashboardWallet"
                 );
 
-
-            // -----------------------------------------
-            // CHECK METAMASK
-            // -----------------------------------------
 
             if (
                 typeof window.ethereum ===
@@ -745,10 +692,6 @@ function setupMetaMask() {
                     "<span>⏳</span>";
 
 
-                // -------------------------------------
-                // REQUEST ACCOUNT
-                // -------------------------------------
-
                 const accounts =
                     await window.ethereum.request({
                         method:
@@ -777,10 +720,6 @@ function setupMetaMask() {
                     "..." +
                     account.slice(-4);
 
-
-                // -------------------------------------
-                // UPDATE UI
-                // -------------------------------------
 
                 if (walletStatus) {
 
@@ -841,10 +780,6 @@ function setupMetaMask() {
                 );
 
 
-                // -------------------------------------
-                // LISTEN FOR ACCOUNT CHANGE
-                // -------------------------------------
-
                 if (
                     window.ethereum &&
                     window.ethereum.on
@@ -865,12 +800,8 @@ function setupMetaMask() {
                             }
 
 
-                            const newAccount =
-                                accounts[0];
-
-
                             updateWalletUI(
-                                newAccount
+                                accounts[0]
                             );
 
                         }
@@ -939,30 +870,25 @@ function updateWalletUI(account) {
             "walletStatus"
         );
 
-
     const walletAddress =
         document.getElementById(
             "walletAddress"
         );
-
 
     const dashboardWallet =
         document.getElementById(
             "dashboardWallet"
         );
 
-
     const blockchainStatus =
         document.getElementById(
             "blockchainStatus"
         );
 
-
     const networkIndicator =
         document.getElementById(
             "networkIndicator"
         );
-
 
     const networkName =
         document.getElementById(
@@ -1037,30 +963,25 @@ function resetWalletUI() {
             "walletStatus"
         );
 
-
     const walletAddress =
         document.getElementById(
             "walletAddress"
         );
-
 
     const dashboardWallet =
         document.getElementById(
             "dashboardWallet"
         );
 
-
     const blockchainStatus =
         document.getElementById(
             "blockchainStatus"
         );
 
-
     const networkIndicator =
         document.getElementById(
             "networkIndicator"
         );
-
 
     const networkName =
         document.getElementById(
