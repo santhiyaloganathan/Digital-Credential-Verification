@@ -215,16 +215,13 @@ function setupCredentialVerification() {
                 // -------------------------------------
                 // BACKEND API
                 // -------------------------------------
-                // Backend route:
-                // GET /verify/:id
-                //
-                // Example:
-                // /verify/ZYV-2026-000123
+                // PUBLIC BACKEND URL
+                // Cloudflare Tunnel
                 // -------------------------------------
 
                 const response =
                     await fetch(
-                        "/api/verify/" +
+                        "https://expand-demand-mercy-somehow.trycloudflare.com/api/verify/" +
                         encodeURIComponent(
                             credentialId
                         ),
@@ -623,9 +620,6 @@ function setupInstitutionLogin() {
 
             // -----------------------------------------
             // CURRENT DEMO LOGIN
-            // -----------------------------------------
-            // Real authentication will be connected
-            // with backend later.
             // -----------------------------------------
 
             if (status) {
