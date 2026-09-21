@@ -373,6 +373,7 @@ app.get(
                             "^" +
                             credentialId +
                             "$",
+
                         $options: "i"
                     }
 
