@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ZENVYRA - Credential Verification</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 10% 80%,
+                    rgba(99, 102, 241, 0.16),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(59, 130, 246, 0.13),
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f8fbff,
+                    #eef2ff,
+                    #f8faff
+                );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 35px 15px;
+
+            color: #172554;
+        }
+
+
+        /* Background Decoration */
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            width: 600px;
+            height: 250px;
+
+            left: -180px;
+            bottom: -70px;
+
+            background: rgba(99, 102, 241, 0.08);
+
+            border-radius: 50%;
+
+            transform: rotate(20deg);
+
+            pointer-events: none;
+        }
+
+
+        body::after {
+            content: "";
+
+            position: fixed;
+
+            width: 600px;
+            height: 250px;
+
+            right: -180px;
+            top: -70px;
+
+            background: rgba(59, 130, 246, 0.07);
+
+            border-radius: 50%;
+
+            transform: rotate(-20deg);
+
+            pointer-events: none;
+        }
+
+
+        /* Main Card */
+
+        .container {
+            position: relative;
+
+            z-index: 2;
+
+            width: 100%;
+
+            max-width: 650px;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            border-radius: 25px;
+
+            padding: 38px 45px 35px;
+
+            box-shadow:
+                0 25px 70px rgba(30, 64, 175, 0.14),
+                0 5px 20px rgba(0, 0, 0, 0.05);
+
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+
+        /* =========================
+           ZENVYRA LOGO
+        ========================== */
+
+        .brand {
+            text-align: center;
+
+            margin-bottom: 28px;
+        }
+
+
+        .logo-symbol {
+            width: 105px;
+            height: 105px;
+
+            margin: 0 auto 5px;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .logo-symbol svg {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+        }
+
+
+        .brand-name {
+            font-size: 38px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #173c9e,
+                    #2563eb,
+                    #6938ef
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+        }
+
+
+        .subtitle {
+            margin-top: 5px;
+
+            color: #64748b;
+
+            font-size: 16px;
+
+            letter-spacing: 0.2px;
+        }
+
+
+        /* Verification Heading */
+
+        .verification-heading {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 12px;
+
+            margin: 28px 0 20px;
+        }
+
+
+        .lock-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #2563eb
+                );
+
+            color: white;
+
+            font-size: 22px;
+
+            box-shadow:
+                0 8px 18px rgba(79, 70, 229, 0.25);
+        }
+
+
+        .verification-heading h1 {
+            font-size: 28px;
+
+            color: #172554;
+
+            font-weight: 750;
+        }
+
+
+        /* Credential ID */
+
+        .credential-id {
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f1f5ff,
+                    #eef2ff
+                );
+
+            border: 1px solid #dbe4ff;
+
+            border-radius: 12px;
+
+            padding: 16px;
+
+            text-align: center;
+
+            font-size: 20px;
+
+            font-weight: 750;
+
+            color: #1e3a8a;
+
+            letter-spacing: 0.5px;
+
+            word-break: break-all;
+        }
+
+
+        /* Status */
+
+        .status {
+            margin-top: 18px;
+
+            width: 100%;
+
+            padding: 17px;
+
+            border-radius: 12px;
+
+            text-align: center;
+
+            font-size: 17px;
+
+            font-weight: 700;
+        }
+
+
+        .loading {
+            background: #fff7ed;
+
+            color: #9a3412;
+
+            border: 1px solid #fed7aa;
+        }
+
+
+        .success {
+            background: #ecfdf5;
+
+            color: #047857;
+
+            border: 1px solid #a7f3d0;
+        }
+
+
+        .error {
+            background: #fef2f2;
+
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+        }
+
+
+        /* Details */
+
+        .details {
+            display: none;
+
+            margin-top: 25px;
+        }
+
+
+        .detail-row {
+            display: flex;
+
+            align-items: center;
+
+            gap: 17px;
+
+            padding: 15px 4px;
+
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+
+            min-width: 40px;
+
+            border-radius: 10px;
+
+            background: #eef2ff;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            color: #4338ca;
+
+            font-size: 19px;
+        }
+
+
+        .detail-content {
+            flex: 1;
+        }
+
+
+        .label {
+            font-size: 13px;
+
+            color: #64748b;
+
+            margin-bottom: 4px;
+
+            font-weight: 500;
+        }
+
+
+        .value {
+            font-size: 16px;
+
+            color: #172554;
+
+            font-weight: 700;
+
+            word-break: break-word;
+        }
+
+
+        /* Home Button */
+
+        .home-button {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 8px;
+
+            width: fit-content;
+
+            margin: 27px auto 0;
+
+            padding: 13px 25px;
+
+            border-radius: 30px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #4f46e5,
+                    #2563eb,
+                    #6366f1
+                );
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 8px 20px rgba(79, 70, 229, 0.25);
+
+            transition: 0.25s ease;
+        }
+
+
+        .home-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 25px rgba(79, 70, 229, 0.32);
+        }
+
+
+        /* Footer */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 25px;
+
+            font-size: 12px;
+
+            color: #94a3b8;
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 20px 12px;
+            }
+
+
+            .container {
+                padding: 30px 22px;
+
+                border-radius: 20px;
+            }
+
+
+            .logo-symbol {
+                width: 85px;
+                height: 85px;
+            }
+
+
+            .brand-name {
+                font-size: 31px;
+            }
+
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+
+            .verification-heading h1 {
+                font-size: 23px;
+            }
+
+
+            .credential-id {
+                font-size: 17px;
+            }
+
+
+            .detail-row {
+                gap: 12px;
+            }
+
+
+            .value {
+                font-size: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <!-- =========================
+             ZENVYRA BRAND
+        ========================== -->
+
+        <div class="brand">
+
+
+            <div class="logo-symbol">
+
+
+                <!-- ZENVYRA SHIELD + Z + ORBIT LOGO -->
+
+                <svg
+                    viewBox="0 0 120 120"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-label="ZENVYRA Logo">
+
+
+                    <defs>
+
+                        <linearGradient
+                            id="logoGradient"
+                            x1="10%"
+                            y1="10%"
+                            x2="90%"
+                            y2="90%">
+
+                            <stop
+                                offset="0%"
+                                stop-color="#0ea5e9"/>
+
+                            <stop
+                                offset="50%"
+                                stop-color="#2563eb"/>
+
+                            <stop
+                                offset="100%"
+                                stop-color="#7c3aed"/>
+
+                        </linearGradient>
+
+                    </defs>
+
+
+                    <!-- Shield -->
+
+                    <path
+                        d="
+                        M60 8
+                        L96 21
+                        L94 61
+                        C92 84 76 101 60 109
+                        C44 101 28 84 26 61
+                        L24 21
+                        Z
+                        "
+
+                        fill="none"
+
+                        stroke="url(#logoGradient)"
+
+                        stroke-width="7"
+
+                        stroke-linejoin="round"
+                    />
+
+
+                    <!-- Z -->
+
+                    <path
+                        d="
+                        M40 35
+                        L80 35
+                        L48 69
+                        L80 69
+                        "
+
+                        fill="none"
+
+                        stroke="url(#logoGradient)"
+
+                        stroke-width="9"
+
+                        stroke-linecap="round"
+
+                        stroke-linejoin="round"
+                    />
+
+
+                    <!-- Orbit -->
+
+                    <ellipse
+                        cx="60"
+                        cy="58"
+                        rx="48"
+                        ry="20"
+
+                        fill="none"
+
+                        stroke="url(#logoGradient)"
+
+                        stroke-width="5"
+
+                        transform="rotate(-18 60 58)"
+                    />
+
+
+                    <!-- Orbit Dot -->
+
+                    <circle
+                        cx="93"
+                        cy="39"
+                        r="5"
+
+                        fill="#2563eb"
+                    />
+
+
+                </svg>
+
+            </div>
+
+
+            <div class="brand-name">
+                ZENVYRA
+            </div>
+
+
+            <div class="subtitle">
+                Digital Credential Verification System
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             VERIFICATION TITLE
+        ========================== -->
+
+        <div class="verification-heading">
+
+
+            <div class="lock-icon">
+                🔐
+            </div>
+
+
+            <h1>
+                Credential Verification
+            </h1>
+
+
+        </div>
+
+
+
+        <!-- Credential ID -->
+
+        <div
+            class="credential-id"
+            id="credentialId">
+
+            Checking credential...
+
+        </div>
+
+
+
+        <!-- Status -->
+
+        <div
+            id="status"
+            class="status loading">
+
+            Verifying credential...
+
+        </div>
+
+
+
+        <!-- =========================
+             CREDENTIAL DETAILS
+        ========================== -->
+
+        <div
+            class="details"
+            id="details">
+
+
+            <!-- Student Name -->
+
+            <div class="detail-row">
+
+                <div class="detail-icon">
+                    👤
+                </div>
+
+
+                <div class="detail-content">
+
+                    <div class="label">
+                        Student Name
+                    </div>
+
+
+                    <div
+                        class="value"
+                        id="studentName">
+
+                        -
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Register Number -->
+
+            <div class="detail-row">
+
+                <div class="detail-icon">
+                    🪪
+                </div>
+
+
+                <div class="detail-content">
+
+                    <div class="label">
+                        Register Number
+                    </div>
+
+
+                    <div
+                        class="value"
+                        id="registerNumber">
+
+                        -
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Programme -->
+
+            <div class="detail-row">
+
+                <div class="detail-icon">
+                    🎓
+                </div>
+
+
+                <div class="detail-content">
+
+                    <div class="label">
+                        Programme / Course
+                    </div>
+
+
+                    <div
+                        class="value"
+                        id="programme">
+
+                        -
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Institution -->
+
+            <div class="detail-row">
+
+                <div class="detail-icon">
+                    🏛️
+                </div>
+
+
+                <div class="detail-content">
+
+                    <div class="label">
+                        Institution
+                    </div>
+
+
+                    <div
+                        class="value"
+                        id="institution">
+
+                        -
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Certificate Type -->
+
+            <div class="detail-row">
+
+                <div class="detail-icon">
+                    📜
+                </div>
+
+
+                <div class="detail-content">
+
+                    <div class="label">
+                        Certificate Type
+                    </div>
+
+
+                    <div
+                        class="value"
+                        id="certificateType">
+
+                        -
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Issue Date -->
+
+            <div class="detail-row">
+
+                <div class="detail-icon">
+                    📅
+                </div>
+
+
+                <div class="detail-content">
+
+                    <div class="label">
+                        Issue Date
+                    </div>
+
+
+                    <div
+                        class="value"
+                        id="issueDate">
+
+                        -
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Verification Status -->
+
+            <div class="detail-row">
+
+                <div class="detail-icon">
+                    ✅
+                </div>
+
+
+                <div class="detail-content">
+
+                    <div class="label">
+                        Verification Status
+                    </div>
+
+
+                    <div class="value">
+                        Verified Credential
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- Home Button -->
+
+        <a
+            href="/"
+            class="home-button">
+
+            ← &nbsp; Go to ZENVYRA Home
+
+        </a>
+
+
+
+        <!-- Footer -->
+
+        <div class="footer">
+
+            Secure Digital Credential Verification
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        /*
+         * ZENVYRA API
+         *
+         * Empty string means:
+         * use the same server from which
+         * verify.html was opened.
+         *
+         * Example:
+         *
+         * http://localhost:5000
+         *
+         * or
+         *
+         * http://192.168.x.x:5000
+         *
+         */
+
+        const API_BASE_URL = "";
+
+
+
+        /*
+         * Credential Verification
+         */
+
+        async function verifyCredential() {
+
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            /*
+             * Get Credential ID
+             *
+             * Example:
+             *
+             * verify.html?id=ZYV-2026-213660
+             */
+
+            const credentialId =
+                params.get("id");
+
+
+            const credentialElement =
+                document.getElementById(
+                    "credentialId"
+                );
+
+
+            const statusElement =
+                document.getElementById(
+                    "status"
+                );
+
+
+            const detailsElement =
+                document.getElementById(
+                    "details"
+                );
+
+
+
+            /*
+             * Check Credential ID
+             */
+
+            if (!credentialId) {
+
+
+                credentialElement.textContent =
+                    "No Credential ID Found";
+
+
+                statusElement.className =
+                    "status error";
+
+
+                statusElement.textContent =
+                    "❌ Invalid verification link.";
+
+
+                return;
+
+            }
+
+
+
+            /*
+             * Show Credential ID
+             */
+
+            credentialElement.textContent =
+                credentialId;
+
+
+
+            /*
+             * Connect to backend
+             */
+
+            try {
+
+
+                const response =
+                    await fetch(
+
+                        API_BASE_URL +
+                        "/api/verify/" +
+                        encodeURIComponent(
+                            credentialId
+                        )
+
+                    );
+
+
+
+                /*
+                 * Convert response to JSON
+                 */
+
+                const data =
+                    await response.json();
+
+
+
+                console.log(
+                    "ZENVYRA Verification Response:",
+                    data
+                );
+
+
+
+                /*
+                 * Credential Verified
+                 */
+
+                if (
+
+                    response.ok &&
+                    data.success &&
+                    data.verified
+
+                ) {
+
+
+                    statusElement.className =
+                        "status success";
+
+
+                    statusElement.textContent =
+                        "✅ Credential Verified Successfully";
+
+
+
+                    /*
+                     * Get credential data
+                     */
+
+                    const credential =
+                        data.credential ||
+                        data.data ||
+                        data;
+
+
+
+                    /*
+                     * Student Name
+                     */
+
+                    document.getElementById(
+                        "studentName"
+                    ).textContent =
+                        credential.studentName ||
+                        "-";
+
+
+
+                    /*
+                     * Register Number
+                     */
+
+                    document.getElementById(
+                        "registerNumber"
+                    ).textContent =
+                        credential.registerNumber ||
+                        "-";
+
+
+
+                    /*
+                     * Programme / Course
+                     */
+
+                    document.getElementById(
+                        "programme"
+                    ).textContent =
+
+                        credential.programme ||
+
+                        credential.course ||
+
+                        "-";
+
+
+
+                    /*
+                     * Institution
+                     */
+
+                    document.getElementById(
+                        "institution"
+                    ).textContent =
+                        credential.institution ||
+                        "-";
+
+
+
+                    /*
+                     * Certificate Type
+                     */
+
+                    document.getElementById(
+                        "certificateType"
+                    ).textContent =
+                        credential.certificateType ||
+                        "-";
+
+
+
+                    /*
+                     * Issue Date
+                     */
+
+                    document.getElementById(
+                        "issueDate"
+                    ).textContent =
+                        credential.issueDate ||
+                        "-";
+
+
+
+                    /*
+                     * Show credential details
+                     */
+
+                    detailsElement.style.display =
+                        "block";
+
+
+                }
+
+
+                /*
+                 * Credential Invalid
+                 */
+
+                else {
+
+
+                    statusElement.className =
+                        "status error";
+
+
+                    statusElement.textContent =
+                        "❌ Credential Invalid or Not Found.";
+
+
+                    detailsElement.style.display =
+                        "none";
+
+                }
+
+
+            }
+
+
+            /*
+             * Server Error
+             */
+
+            catch (error) {
+
+
+                console.error(
+                    "ZENVYRA Verification Error:",
+                    error
+                );
+
+
+                statusElement.className =
+                    "status error";
+
+
+                statusElement.textContent =
+                    "❌ Unable to connect to verification server.";
+
+
+                detailsElement.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+
+        /*
+         * Automatically verify
+         * when page loads
+         */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            verifyCredential
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
